@@ -5,7 +5,7 @@ const products = [
     id: 1,
     title: 'MOULINET KRAKEN PRO',
     subtitle: 'Série Limitée Deep Sea',
-    price: '899,00 DZA',
+    price: '89900 DZA',
     image: '/prod1.png',
     isNew: true
   },
@@ -13,7 +13,7 @@ const products = [
     id: 2,
     title: 'CANNE CARBON ELITE X',
     subtitle: 'Ultra-Sensibilité High-Modulus',
-    price: '1 250,00 DZA',
+    price: '1 25000 DZA',
     image: '/prod2.png',
     isNew: false
   },
@@ -21,7 +21,7 @@ const products = [
     id: 3,
     title: 'VESTE TECHNIQUE APEX',
     subtitle: 'Protection Tempête G-III',
-    price: '450,00 DZA',
+    price: '45000 DZA',
     image: '/prod3.png',
     isNew: false
   },
@@ -29,7 +29,7 @@ const products = [
     id: 4,
     title: 'SAC DE TRANSPORT MARINE',
     subtitle: 'Étanche IPX8 - 60 Litres',
-    price: '320,00DZA',
+    price: '32000DZA',
     image: '/prod4.png',
     isNew: false
   }
