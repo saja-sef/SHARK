@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate }) => {
-  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNav = (page) => {
+    onNavigate(page);
+    setIsMenuOpen(false);
+  };
+
   const handleContactClick = (e) => {
     e.preventDefault();
+    setIsMenuOpen(false);
     const footerElement = document.getElementById('footer');
     if (footerElement) {
       footerElement.scrollIntoView({ behavior: 'smooth' });
@@ -13,18 +24,16 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
   return (
     <nav className="navbar">
       <div className="navbar-container">
-     
-        <div className="logo" onClick={() => { onLogoClick(); onNavigate('home'); }}>
+        <div className="logo" onClick={() => { onLogoClick(); handleNav('home'); }}>
           <img src="/logo.png" alt="SHARK Elite Logo" className="logo-img" />
         </div>
 
-       
         <ul className="navbar-links">
           <li>
             <a 
               href="#home" 
               className={currentPage === 'home' ? 'active' : ''} 
-              onClick={(e) => { e.preventDefault(); onNavigate('home'); }}
+              onClick={(e) => { e.preventDefault(); handleNav('home'); }}
             >
               ACCUEIL
             </a>
@@ -33,7 +42,7 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
             <a 
               href="#shop" 
               className={currentPage === 'shop' ? 'active' : ''} 
-              onClick={(e) => { e.preventDefault(); onNavigate('shop'); }}
+              onClick={(e) => { e.preventDefault(); handleNav('shop'); }}
             >
               SHOP
             </a>
@@ -45,12 +54,10 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
           </li>
         </ul>
 
-        
         <div className="navbar-icons">
-        
           <button 
             className={`icon-btn wishlist-icon-link ${currentPage === 'wishlist' ? 'active-icon' : ''}`} 
-            onClick={() => onNavigate('wishlist')}
+            onClick={() => handleNav('wishlist')}
             title="Liste d'envie"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill={wishlistCount > 0 ? "#b58d3d" : "none"} stroke={wishlistCount > 0 ? "#b58d3d" : "currentColor"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -59,10 +66,9 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
             {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
           </button>
 
-          
           <button 
             className={`icon-btn cart-btn ${currentPage === 'bag' ? 'active-icon' : ''}`} 
-            onClick={() => onNavigate('bag')}
+            onClick={() => handleNav('bag')}
             title="Panier"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +78,42 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
             </svg>
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
+
+          <button className="mobile-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
+            {isMenuOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            )}
+          </button>
         </div>
+      </div>
+
+      <div className={`mobile-menu ${isMenuOpen ? 'active' : ''}`}>
+        <a 
+          href="#home" 
+          className={currentPage === 'home' ? 'active' : ''} 
+          onClick={(e) => { e.preventDefault(); handleNav('home'); }}
+        >
+          ACCUEIL
+        </a>
+        <a 
+          href="#shop" 
+          className={currentPage === 'shop' ? 'active' : ''} 
+          onClick={(e) => { e.preventDefault(); handleNav('shop'); }}
+        >
+          SHOP
+        </a>
+        <a href="#footer" onClick={handleContactClick}>
+          CONTACT
+        </a>
       </div>
     </nav>
   );
