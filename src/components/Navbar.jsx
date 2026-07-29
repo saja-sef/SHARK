@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 
-const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate }) => {
+
+const parsePrice = (price) => {
+  if (typeof price === 'number' && !isNaN(price)) return price;
+  if (typeof price === 'string') {
+    const cleaned = price.replace(/[^0-9.]/g, '');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  }
+  return 0;
+};
+
+
+const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate, cartItems = [], onRemoveItem }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -20,6 +32,13 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
       footerElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  
+  const subtotal = cartItems.reduce((sum, item) => {
+    const itemPrice = parsePrice(item.price);
+    const itemQty = Number(item.quantity) || 1;
+    return sum + (itemPrice * itemQty);
+  }, 0);
 
   return (
     <nav className="navbar">
@@ -66,18 +85,64 @@ const Navbar = ({ onLogoClick, cartCount, wishlistCount, currentPage, onNavigate
             {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
           </button>
 
-          <button 
-            className={`icon-btn cart-btn ${currentPage === 'bag' ? 'active-icon' : ''}`} 
-            onClick={() => handleNav('bag')}
-            title="Panier"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-          </button>
+          <div className="cart-wrapper">
+            <button 
+              className={`icon-btn cart-btn ${currentPage === 'bag' ? 'active-icon' : ''}`} 
+              onClick={() => handleNav('bag')}
+              title="Panier"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </button>
+
+           
+            <div className="cart-dropdown">
+              <div className="cart-dropdown-items">
+                {cartItems.length === 0 ? (
+                  <p style={{ textAlign: 'center', margin: '20px 0', fontSize: '0.8rem', color: '#888' }}>
+                    Votre panier est vide
+                  </p>
+                ) : (
+                  cartItems.map((item) => {
+                    const itemPrice = parsePrice(item.price);
+                    const itemQty = Number(item.quantity) || 1;
+                    return (
+                      <div className="cart-dropdown-item" key={item.id}>
+                        <img src={item.image} alt={item.name} />
+                        <div className="cart-dropdown-item-info">
+                          <p className="item-name">{item.name}</p>
+                          <p className="item-price">{itemQty} × {itemPrice.toLocaleString()} DZD</p>
+                        </div>
+                        {onRemoveItem && (
+                          <button 
+                            className="cart-remove-btn" 
+                            onClick={() => onRemoveItem(item.id)}
+                            title="Supprimer"
+                          >
+                            &times;
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              <div className="cart-dropdown-subtotal">
+                <span>Sous-total :</span>
+                <span className="subtotal-price">{subtotal.toLocaleString()} DZD</span>
+              </div>
+
+              <div className="cart-dropdown-actions">
+                <button onClick={() => handleNav('bag')} className="btn-view-cart">VOIR LE PANIER</button>
+                <button className="btn-checkout" onClick={() => handleNav('bag')}>COMMANDER</button>
+              </div>
+            </div>
+          </div>
 
           <button className="mobile-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
             {isMenuOpen ? (

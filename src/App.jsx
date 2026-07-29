@@ -88,6 +88,8 @@ function App() {
         wishlistCount={wishlist.length}
         currentPage={currentPage}
         onNavigate={setCurrentPage}
+        cartItems={cartItems} 
+        onRemoveItem={handleRemoveFromCart} 
       />
 
       {currentPage === 'home' && (
